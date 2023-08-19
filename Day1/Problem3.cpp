@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 // Longest Increasing Subsequence
@@ -22,11 +23,11 @@ int longestSubsequence1(int n, int a[])
     // To store the length for each element
     vector<int> dp(n, 1);
 
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 1; i < n; i++)
+    { // Start from index 1
         for (int j = 0; j < i; j++)
         {
-            if (dp[j] < dp[i])
+            if (a[j] < a[i])
             {
                 dp[i] = max(dp[i], dp[j] + 1);
             }
