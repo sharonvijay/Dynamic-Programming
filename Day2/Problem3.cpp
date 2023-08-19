@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <unordered_map>
 #include <vector>
 using namespace std;
@@ -21,7 +22,7 @@ using namespace std;
 // to make 43.
 unordered_map<int, vector<int>> memo;
 
-vector<int> minPartition(int N)
+vector<int> minPartition1(int N)
 {
     vector<int> denominations = {1, 2, 5, 10, 20, 50, 100, 200, 500, 2000};
     if (N == 0)
@@ -38,7 +39,7 @@ vector<int> minPartition(int N)
     {
         if (coin <= N)
         {
-            vector<int> current = minPartition(N - coin);
+            vector<int> current = minPartition1(N - coin);
             if (result.empty() || current.size() + 1 < result.size())
             {
                 result = current;
@@ -49,13 +50,55 @@ vector<int> minPartition(int N)
     memo[N] = result;
     return memo[N];
 }
+vector<int> minPartition2(int N)
+{
+    vector<int> denominations = {1, 2, 5, 10, 20, 50, 100, 200, 500, 2000};
+    vector<int> dp(N + 1, N + 1); // Initialize with a value greater than N
+    dp[0] = 0;
+
+    for (int i = 1; i <= N; ++i)
+    {
+        for (int coin : denominations)
+        {
+            if (coin <= i)
+            {
+                dp[i] = min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+
+    // Reconstruct the coins used
+    vector<int> coinsUsed;
+    int remaining = N;
+    while (remaining > 0)
+    {
+        for (int coin : denominations)
+        {
+            if (coin <= remaining && dp[remaining - coin] + 1 == dp[remaining])
+            {
+                coinsUsed.push_back(coin);
+                remaining -= coin;
+                break;
+            }
+        }
+    }
+    reverse(coinsUsed.begin(), coinsUsed.end());
+    return coinsUsed;
+}
 int main()
 {
     int N;
     cin >> N;
-    vector<int> result = minPartition(N);
-    cout << "Minimum no of coins required " << endl;
-    for (auto r : result)
+    vector<int> result1 = minPartition1(N);
+    cout << "Sol 1 Minimum no of coins required " << endl;
+    for (auto r : result1)
+    {
+        cout << r << " ";
+    }
+    cout << endl;
+    vector<int> result2 = minPartition2(N);
+    cout << "Sol 2 Minimum no of coins required " << endl;
+    for (auto r : result2)
     {
         cout << r << " ";
     }
