@@ -68,50 +68,38 @@ int uniquePaths2(int n, int m, vector<vector<int>> &grid)
     }
     return dp[0][0];
 }
-int uniquePathsMemo(int i, int j, vector<vector<int>> &grid, vector<vector<int>> &memo)
+int uniquePathsMemo(int n, int m, vector<vector<int>> &grid, vector<vector<int>> &memo)
 {
     // MEMOIZATION APPROACH
 
     int MOD = 1000000007;
 
-    int n = grid.size();
-    int m = grid[0].size();
-
-    // outof bound or unreachable
-    if (i > n || j > m || grid[i][j] == 0)
+    if (n < 1 || m < 1 || grid[n - 1][m - 1] == 0)
     {
         return 0;
     }
 
-    if (i == n - 1 || j == m - 1)
+    if (n == 1 && m == 1)
     {
         return 1;
     }
 
-    if (memo[i][j] != -1)
+    if (memo[n][m] != -1)
     {
-        return memo[i][j];
+        return memo[n][m];
     }
 
-    int rightPaths = uniquePathsMemo(i, j + 1, grid, memo) % MOD;
-    int downPaths = uniquePathsMemo(i + 1, j, grid, memo) % MOD;
+    int uniquePathLeft = uniquePathsMemo(n - 1, m, grid, memo);
+    int uniquePathUp = uniquePathsMemo(n, m - 1, grid, memo);
 
-    memo[i][j] = (rightPaths + downPaths) % MOD;
-    return memo[i][j];
+    memo[n][m] = (uniquePathLeft % MOD + uniquePathUp % MOD) % MOD;
+
+    return memo[n][m];
 }
 int uniquePaths3(int n, int m, vector<vector<int>> &grid)
 {
-    vector<vector<int>> memo(n, vector<int>(m, -1));
-    int result = uniquePathsMemo(0, 0, grid, memo);
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = 0; j < m; j++)
-        {
-            cout << memo[i][j] << " ";
-        }
-        cout << endl;
-    }
-    return result;
+    vector<vector<int>> memo(n + 1, vector<int>(m + 1, -1));
+    return uniquePathsMemo(n, m, grid, memo);
 }
 
 int main()
