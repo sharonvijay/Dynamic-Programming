@@ -31,42 +31,46 @@ int uniquePaths2(int n, int m, vector<vector<int>> &grid)
 
     vector<vector<int>> dp(n, vector<int>(m, 0));
     // init destination
-    // Initialize the destination cell if it's open
-    if (grid[n - 1][m - 1] == 1)
+    // Initialize the starting cell if it's open
+    if (grid[0][0] == 1)
     {
-        dp[n - 1][m - 1] = 1;
+        dp[0][0] = 1;
     }
 
-    // init last row
-    for (int j = m - 2; j >= 0; --j)
+    // init first row
+    for (int j = 1; j < m; j++)
     {
-        if (grid[n - 1][j] == 1)
+        if (grid[0][j] == 1)
         {
-            dp[n - 1][j] = dp[n - 1][j + 1];
+            dp[0][j] = dp[0][j - 1];
         }
     }
 
-    // init last col
-    for (int i = n - 2; i >= 0; --i)
+    // init first col
+    for (int i = 1; i < n; i++)
     {
-        if (grid[i][m - 1] == 1)
+        if (grid[i][0] == 1)
         {
-            dp[i][m - 1] = dp[i + 1][m - 1];
+            dp[i][0] = dp[i - 1][0];
         }
     }
 
     // Fill the dp
-    for (int i = n - 2; i >= 0; i--)
+    for (int i = 1; i < n; i++)
     {
-        for (int j = m - 2; j >= 0; j--)
+        for (int j = 1; j < m; j++)
         {
             if (grid[i][j] == 1)
             {
-                dp[i][j] = (dp[i + 1][j] + dp[i][j + 1]) % MOD;
+                dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;
+            }
+            else
+            {
+                dp[i][j] = 0;
             }
         }
     }
-    return dp[0][0];
+    return dp[n - 1][m - 1];
 }
 int uniquePathsMemo(int n, int m, vector<vector<int>> &grid, vector<vector<int>> &memo)
 {
